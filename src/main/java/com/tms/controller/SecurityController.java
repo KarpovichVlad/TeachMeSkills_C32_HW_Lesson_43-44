@@ -3,6 +3,9 @@ package com.tms.controller;
 import com.tms.model.User;
 import com.tms.model.dto.RegistrationRequestDto;
 import com.tms.service.SecurityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/security")
+@Tag(name = "Security Controller", description = "Управление регистрацией")
 public class SecurityController {
 
     public SecurityService securityService;
@@ -26,6 +30,10 @@ public class SecurityController {
         this.securityService = securityService;
     }
 
+    @Operation(summary = "Регистрация пользователя", description = "Регистрирует нового пользователя в системе")
+    @ApiResponse(responseCode = "201", description = "Пользователь успешно зарегистрирован")
+    @ApiResponse(responseCode = "400", description = "Некорректные данные запроса")
+    @ApiResponse(responseCode = "409", description = "Конфликт: пользователь уже существует")
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> registration(@RequestBody @Valid RegistrationRequestDto requestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
